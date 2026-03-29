@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemberitahuan Penting - SIBUK BOS 2.0</title>
+  <style>
+    /* Menggunakan Font Profesionalala Apple/Google */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #F6F9FC; /* Warna Surface SIBUK BOS */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0A2540; /* Warna Brand SIBUK BOS */
+    }
+
+    .container {
+      background: white;
+      padding: 4rem 3rem;
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(10, 37, 64, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid rgba(10, 37, 64, 0.05);
+    }
+
+    /* Gaya Ilustrasi SVG */
+    .illustration {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 3rem;
+      color: #635BFF; /* Warna Primary SIBUK BOS */
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      color: #64748b;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Tombol Utama Ala Aplikasi Premium */
+    .btn-pindah {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 1.2rem 2.5rem;
+      background-color: #635BFF; /* Warna Primary SIBUK BOS */
+      color: white;
+      text-decoration: none;
+      border-radius: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 10px 20px -5px rgba(99, 91, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .btn-pindah:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px -5px rgba(99, 91, 255, 0.5);
+      background-color: #5249ea;
+    }
+
+    .btn-pindah:active {
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg class="illustration" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+
+    <h1>Yth. Bapak / Ibu Pengguna SIBUK BOS 2.0</h1>
+    <p>
+      Guna meningkatkan kualitas layanan dan kenyamanan akses aplikasi SIBUK BOS 2.0, kami sampaikan bahwa alamat akses SIBUKBOS telah resmi kami perbarui.<br><br>
+      Silakan klik tombol di bawah ini untuk menuju alamat yang baru. Jangan lupa menyimpan (bookmark) alamat baru tersebut untuk penggunaan di masa mendatang.
+    </p>
+
+    <a href="https://sibukbosid.web.app" class="btn-pindah">
+      Buka SIBUK BOS di Alamat Baru
+      <svg style="width:1.2rem;height:1.2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+    </a>
+  </div>
+</body>
+</html>
