@@ -1,7 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/",
+      "destination": "/pindah.html"
+    },
+    {
+      "source": "/index.html",
       "destination": "/pindah.html"
     }
   ]
