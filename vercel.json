@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/pindah.html"
+      "destination": "public/pindah.html"
     },
     {
       "source": "/index.html",
-      "destination": "/pindah.html"
+      "destination": "/public/pindah.html"
     }
   ]
 }
