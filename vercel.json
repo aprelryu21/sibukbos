@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "public/pindah.html"
+      "destination": "/public/pindah.html"
     },
     {
       "source": "/index.html",
