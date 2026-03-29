@@ -1,12 +1,14 @@
 {
-  "rewrites": [
+  "redirects": [
     {
       "source": "/",
-      "destination": "/public/pindah.html"
+      "destination": "/pindah.html",
+      "permanent": false
     },
     {
-      "source": "/index.html",
-      "destination": "/public/pindah.html"
+      "source": "/public/(.*)",
+      "destination": "/pindah.html",
+      "permanent": false
     }
   ]
 }
