@@ -1,33 +1,242 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Page Not Found</title>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waduh! Halamannya Gaada - 404</title>
+    <style>
+        /* --- Gaya Dasar & Reset --- */
+        :root {
+            --primary-color: #6c5ce7; /* Warna ungu lucu */
+            --accent-color: #ff7675;  /* Warna pink kemerahan */
+            --text-color: #2d3436;
+            --bg-color: #f9f9f9;
+        }
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px 16px; border-radius: 3px; }
-      #message h3 { color: #888; font-weight: normal; font-size: 16px; margin: 16px 0 12px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden; /* Mencegah scroll saat animasi */
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* --- Kontainer Utama --- */
+        .container {
+            max-width: 600px;
+            z-index: 10;
+        }
+
+        /* --- Area Ilustrasi SVG --- */
+        .illustration-area {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+        }
+
+        /* --- Gaya & Animasi Hantu (SVG) --- */
+        .ghost {
+            width: 100%;
+            height: 100%;
+            fill: #fff;
+            stroke: var(--text-color);
+            stroke-width: 8px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            /* Animasi melayang jatuh bangun */
+            animation: floatGhost 4s ease-in-out infinite;
+            filter: drop-shadow(0 15px 10px rgba(0,0,0,0.1));
+        }
+
+        .ghost-eye {
+            fill: var(--text-color);
+            /* Animasi mata kedip-kedip bingung */
+            animation: blinkEyes 3s infinite;
+            transform-origin: center;
+        }
+
+        .ghost-blush {
+            fill: #ffadd2;
+            opacity: 0.8;
+        }
+        
+        /* Bayangan di bawah hantu */
+        .shadow {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(1);
+            width: 150px;
+            height: 20px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            /* Animasi bayangan ikut mengecil/membesar */
+            animation: floatShadow 4s ease-in-out infinite;
+            filter: blur(2px);
+        }
+
+        /* --- Teks & Tombol --- */
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -5px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Tanda tanya animasi di atas 404 */
+        .error-code::after {
+            content: '?';
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            font-size: 60px;
+            color: var(--accent-color);
+            transform: rotate(15deg);
+            animation: questionWobble 2s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        p {
+            font-size: 16px;
+            color: #636e72;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .btn-back {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-back:hover {
+            background-color: #5b4bc4;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .btn-back:active {
+            transform: translateY(-1px);
+        }
+
+        /* --- Elemen Latar Belakang Acak --- */
+        .decor {
+            position: absolute;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            opacity: 0.05;
+            z-index: 1;
+            animation: decorFloat 10s infinite linear;
+        }
+
+        /* -----------------------------------------
+           --- DEFINISI ANIMASI (KEYFRAMES) ---
+           ----------------------------------------- */
+
+        /* Hantu melayang naik turun & sedikit rotasi bingung */
+        @keyframes floatGhost {
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50%      { transform: translateY(-25px) rotate(2deg); }
+        }
+
+        /* Bayangan mengecil saat hantu naik, membesar saat turun */
+        @keyframes floatShadow {
+            0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 1; }
+            50%      { transform: translateX(-50%) scaleX(0.7); opacity: 0.5; }
+        }
+
+        /* Mata berkedip gila (picing-picing bingung) */
+        @keyframes blinkEyes {
+            0%, 10%, 12%, 20%, 22%, 60%, 62%, 100% { transform: scaleY(1); }
+            11%, 21%, 61% { transform: scaleY(0.1); } /* Kedip cepat */
+            80% { transform: scaleY(1) translateX(2px); } /* Lirik kanan */
+            85% { transform: scaleY(1) translateX(-2px); } /* Lirik kiri */
+        }
+        
+        /* Tanda tanya goyang-goyang */
+        @keyframes questionWobble {
+            0%, 100% { transform: rotate(15deg) scale(1); }
+            50%      { transform: rotate(25deg) scale(1.1); color: var(--primary-color); }
+        }
+
+        /* Elemen latar belakang melayang acak */
+        @keyframes decorFloat {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, 100px) rotate(360deg); }
+        }
+
+        /* --- Responsif Mobile --- */
+        @media (max-width: 480px) {
+            .error-code { font-size: 80px; }
+            .error-code::after { font-size: 40px; right: -20px; top: -10px; }
+            h1 { font-size: 22px; }
+            p { font-size: 14px; }
+            .illustration-area { width: 200px; height: 200px; }
+            .shadow { width: 100px; }
+        }
     </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>404</h2>
-      <h1>Page Not Found</h1>
-      <p>The specified file was not found on this website. Please check the URL for mistakes and try again.</p>
-      <h3>Why am I seeing this?</h3>
-      <p>This page was generated by the Firebase Command-Line Interface. To modify it, edit the <code>404.html</code> file in your project's configured <code>public</code> directory.</p>
+</head>
+<body>
+    
+    <div class="decor" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
+    <div class="decor" style="width: 50px; height: 50px; bottom: 15%; right: 15%; background-color: var(--accent-color); animation-duration: 15s;"></div>
+    <div class="decor" style="width: 80px; height: 80px; top: 60%; left: 80%; animation-duration: 12s; opacity: 0.03;"></div>
+
+    <div class="container">
+        
+        <div class="illustration-area">
+            <svg class="ghost" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 20 C60 20 30 50 30 90 L30 180 C30 200 45 210 60 200 C75 190 85 200 100 200 C115 200 125 190 140 200 C155 210 170 200 170 180 L170 90 C170 50 140 20 100 20 Z" />
+                
+                <ellipse class="ghost-eye" cx="75" cy="100" rx="10" ry="12" />
+                <ellipse class="ghost-eye" cx="125" cy="100" rx="10" ry="12" />
+                
+                <circle fill="none" stroke="#2d3436" stroke-width="6" cx="100" cy="140" r="10" />
+                
+                <circle class="ghost-blush" cx="55" cy="125" r="8" />
+                <circle class="ghost-blush" cx="145" cy="125" r="8" />
+                
+                <path fill="none" stroke="#2d3436" stroke-width="8" stroke-linecap="round" d="M30 130 C15 110 20 90 40 85" />
+                <path fill="none" stroke="#2d3436" stroke-width="8" stroke-linecap="round" d="M170 130 C185 150 190 170 180 180" />
+            </svg>
+            <div class="shadow"></div>
+        </div>
+
+        <div class="error-code">404</div>
+        <h1>Waduh! Antah Berantah...</h1>
+        <p>Hantu kami juga bingung Bapak/Ibu mau ke mana. <br> Kayaknya halaman yang dicari udah pindah alam atau emang gapernah ada.</p>
+        
+        <a href="/" class="btn-back">Balik ke Jalan yang Benar</a>
     </div>
-  </body>
+
+</body>
 </html>
