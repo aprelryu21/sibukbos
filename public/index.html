@@ -144,12 +144,25 @@
     </div>
   </div>
 
-  <iframe 
-    src="https://script.google.com/macros/s/AKfycby0LsoCwDzuTMkoa2MAh3xgrDSxf-y0zSA3X_O6iPNWfP84oMwY1E_57Ld23ARpNu5aog/exec" 
+  <iframe  id="gas-iframe"
+    src="https://script.google.com/macros/s/AKfycbyao1oWVCC7nDcRtO3Q_bNP5ChgjLeqK53FAsht1SXJzXWkwbh8dEbYSjCkGVkz9kOIiA/exec" 
     allow="fullscreen; clipboard-read; clipboard-write" 
     title="SIBUK BOS 2.0 APPS"
     onload="hilangkanSplash()">
   </iframe>
+
+  <script>
+  // Mendengarkan instruksi perubahan halaman dari dalam iframe
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'GANTI_HALAMAN') {
+      var iframe = document.getElementById('gas-iframe');
+      if (iframe) {
+        // Mengubah link iframe dari luar secara aman tanpa merusak domain utama
+        iframe.src = event.data.url; 
+        }
+      }
+    });
+  </script>
 
   <script>
     // --- 1. LOGIKA SPLASH SCREEN ---
