@@ -1,337 +1,254 @@
-<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIBUK BOS - Maintenance</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="google-site-verification" content="OPWq6TRABR7Znic9lfHHwDMU-9KjPRrMWp9jEf2PZS8" />
+  <title>SIBUK BOS 2.0 - Aplikasi Cetak Kuitansi & BKU Otomatis</title>
+  <meta name="description" content="Aplikasi SIBUK BOS 2.0 membantu Bendahara dan Operator Sekolah mengekstrak PDF BKU Arkas menjadi kuitansi SPJ otomatis secara massal. Cepat, akurat, dan gratis.">
+  <meta name="keywords" content="Aplikasi BOS, SPJ BOS, Arkas, Cetak Kuitansi Massal, BKU Arkas, Bendahara Sekolah, Ekstrak PDF BKU, Kurikulum Merdeka, Laporan Keuangan Sekolah">
+  <meta name="author" content="Tim Developer SIBUK BOS">
+  
+  <meta property="og:title" content="SIBUK BOS 2.0 - SPJ BOS Jadi Mudah!">
+  <meta property="og:description" content="Tinggalkan cara manual! Ekstrak PDF BKU Arkas dan cetak kuitansi massal dalam hitungan detik.">
+  <meta property="og:url" content="https://sibukbosid.web.app">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://sibukbosid.web.app/logo.png"> 
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SIBUK BOS">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0A2540">
+  
+  <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23635BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>' type="image/svg+xml">
+  <link rel="manifest" href="/manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(() => console.log('SIBUK BOS Service Worker Terdaftar!'));
+      }
+    </script>
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    /* Reset & Iframe Anti-Tenggelam */
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100dvh; min-height: -webkit-fill-available;
+      overflow: hidden; background-color: #0A2540; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    /* ========================================= */
+    /* 1. SPLASH SCREEN (LAYAR PEMBUKA)          */
+    /* ========================================= */
+    #splash-screen {
+      position: fixed; inset: 0; z-index: 9999; background-color: #0A2540;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s;
+    }
+    .splash-logo {
+      width: 80px; height: 80px; background: linear-gradient(135deg, #635BFF, #3B82F6);
+      border-radius: 24px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 30px rgba(99, 91, 255, 0.4); margin-bottom: 24px;
+      animation: pulse-logo 2s infinite ease-in-out;
+    }
+    .splash-logo svg { width: 40px; height: 40px; color: white; }
+    .splash-title { color: white; font-size: 28px; font-weight: 900; letter-spacing: 1px; margin: 0 0 8px 0; }
+    .splash-subtitle { color: #94A3B8; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+    
+    .loading-dots { display: flex; gap: 6px; margin-top: 40px; }
+    .dot { width: 10px; height: 10px; background-color: #635BFF; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes pulse-logo {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(99, 91, 255, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(99, 91, 255, 0.6); }
+    }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
     }
 
-    body{
-      font-family:'Poppins',sans-serif;
-      min-height:100vh;
-      background:linear-gradient(135deg,#0f172a,#111827,#1e293b);
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:white;
-      position:relative;
+    /* ========================================= */
+    /* 2. INSTALL PROMPT (NOTIFIKASI PASANG)     */
+    /* ========================================= */
+    #install-prompt {
+      position: fixed; bottom: -150%; left: 0; width: 100%; z-index: 9998;
+      display: flex; justify-content: center; padding: 16px; box-sizing: border-box;
+      transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #install-prompt.show { bottom: 0; }
+    
+    .prompt-card {
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      width: 100%; max-width: 400px; padding: 20px; border-radius: 24px;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.5);
+      position: relative;
+    }
+    .prompt-close {
+      position: absolute; top: 12px; right: 12px; width: 30px; height: 30px;
+      background: #F1F5F9; border: none; border-radius: 50%; color: #64748B;
+      font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .prompt-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .prompt-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #635BFF, #3B82F6); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+    .prompt-text h4 { margin: 0 0 4px 0; color: #0F172A; font-size: 18px; font-weight: 800; }
+    .prompt-text p { margin: 0; color: #64748B; font-size: 12px; font-weight: 500; line-height: 1.4; }
+    
+    .prompt-instruction { background: #F8FAFC; padding: 12px; border-radius: 12px; border: 1px solid #E2E8F0; display: flex; align-items: center; gap: 12px; }
+    .prompt-instruction p { margin: 0; font-size: 12px; color: #334155; font-weight: 600; line-height: 1.5; }
+    .prompt-btn {
+      width: 100%; background: #635BFF; color: white; border: none; padding: 14px;
+      border-radius: 14px; font-size: 14px; font-weight: 800; margin-top: 16px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3); display: none; /* Hanya muncul jika Android mendeteksi prompt native */
     }
 
-    .bg-glow{
-      position:absolute;
-      width:500px;
-      height:500px;
-      background:rgba(34,197,94,0.15);
-      filter:blur(120px);
-      border-radius:50%;
-      animation:floatGlow 8s ease-in-out infinite;
-    }
 
-    @keyframes floatGlow{
-      0%,100%{
-        transform:translateY(0px) translateX(0px);
-      }
-      50%{
-        transform:translateY(-30px) translateX(20px);
-      }
-    }
 
-    .container{
-      width:90%;
-      max-width:1100px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:40px;
-      align-items:center;
-      z-index:2;
-    }
 
-    .left h1{
-      font-size:64px;
-      line-height:1.1;
-      margin-bottom:20px;
-      font-weight:700;
-    }
-
-    .left h1 span{
-      color:#22c55e;
-      text-shadow:0 0 15px rgba(34,197,94,0.5);
-    }
-
-    .left p{
-      color:#cbd5e1;
-      font-size:18px;
-      line-height:1.8;
-      margin-bottom:30px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.1);
-      padding:12px 18px;
-      border-radius:999px;
-      margin-bottom:25px;
-      backdrop-filter:blur(10px);
-    }
-
-    .dot{
-      width:10px;
-      height:10px;
-      background:#22c55e;
-      border-radius:50%;
-      animation:pulse 1.5s infinite;
-    }
-
-    @keyframes pulse{
-      0%{
-        transform:scale(1);
-        opacity:1;
-      }
-      50%{
-        transform:scale(1.8);
-        opacity:.4;
-      }
-      100%{
-        transform:scale(1);
-        opacity:1;
-      }
-    }
-
-    .btn{
-      display:inline-block;
-      padding:14px 28px;
-      background:#22c55e;
-      color:#fff;
-      text-decoration:none;
-      border-radius:14px;
-      font-weight:600;
-      transition:.3s;
-      box-shadow:0 10px 30px rgba(34,197,94,.3);
-    }
-
-    .btn:hover{
-      transform:translateY(-4px);
-      background:#16a34a;
-    }
-
-    .right{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-
-    .svg-box{
-      width:100%;
-      max-width:500px;
-      animation:float 4s ease-in-out infinite;
-    }
-
-    @keyframes float{
-      0%,100%{
-        transform:translateY(0px);
-      }
-      50%{
-        transform:translateY(-15px);
-      }
-    }
-
-    .gear-big{
-      transform-origin:center;
-      animation:spin 8s linear infinite;
-    }
-
-    .gear-small{
-      transform-origin:center;
-      animation:spinReverse 5s linear infinite;
-    }
-
-    @keyframes spin{
-      from{
-        transform:rotate(0deg);
-      }
-      to{
-        transform:rotate(360deg);
-      }
-    }
-
-    @keyframes spinReverse{
-      from{
-        transform:rotate(360deg);
-      }
-      to{
-        transform:rotate(0deg);
-      }
-    }
-
-    .blink{
-      animation:blink 2s infinite;
-    }
-
-    @keyframes blink{
-      0%,45%,100%{
-        opacity:1;
-      }
-      50%{
-        opacity:0;
-      }
-    }
-
-    .floating-icon{
-      position:absolute;
-      opacity:.08;
-      animation:floatIcons 10s linear infinite;
-    }
-
-    @keyframes floatIcons{
-      0%{
-        transform:translateY(100vh) rotate(0deg);
-      }
-      100%{
-        transform:translateY(-120vh) rotate(360deg);
-      }
-    }
-
-    @media(max-width:900px){
-      .container{
-        grid-template-columns:1fr;
-        text-align:center;
-      }
-
-      .left h1{
-        font-size:42px;
-      }
-
-      .left p{
-        font-size:16px;
-      }
-    }
   </style>
 </head>
-
 <body>
 
-  <div class="bg-glow"></div>
+  <div style="display: none;" aria-hidden="true">
+    <h1>SIBUK BOS 2.0 - Sistem Pembukuan Kuitansi BOS</h1>
+    <p>Aplikasi SIBUK BOS adalah solusi cerdas berbasis web untuk Bendahara Sekolah dan Operator Dana BOS. Fitur andalan kami meliputi: ekstraksi otomatis file PDF BKU Arkas menggunakan AI, pencetakan kuitansi massal anti-blokir, rekapitulasi data BKU, manajemen pajak (PPN, PPh), hingga dukungan fitur Tanda Tangan Digital Kepala Sekolah. Dirancang khusus untuk mempermudah pelaporan keuangan sekolah dalam kerangka Kurikulum Merdeka. Akses cepat, aman, dan tanpa biaya langganan.</p>
+  </div>
+  <div id="splash-screen">
+    <div class="splash-logo">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
 
-  <!-- Floating Icons -->
-  <svg class="floating-icon" style="left:10%; width:40px; animation-duration:12s;" viewBox="0 0 24 24" fill="white">
-    <path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 16.8L5.5 21L7.5 13.5L2 9H9L12 2Z"/>
-  </svg>
 
-  <svg class="floating-icon" style="left:80%; width:50px; animation-duration:15s;" viewBox="0 0 24 24" fill="white">
-    <circle cx="12" cy="12" r="10"/>
-  </svg>
 
-  <div class="container">
 
-    <div class="left">
 
-      <div class="badge">
-        <div class="dot"></div>
-        <span>Sistem sedang diperbarui</span>
-      </div>
 
-      <h1>
-        SIBUK <span>BOS</span><br>
-        Sedang Maintenance
-      </h1>
 
-      <p>
-        Tenang yaa 👋  
-        Tim kami sedang memperbaiki dan menambahkan fitur baru agar pengalaman menggunakan SIBUK BOS jadi lebih cepat, stabil, dan nyaman.
-      </p>
 
-      <a href="#" class="btn">
-        Coba Lagi Nanti
-      </a>
-
-    </div>
-
-    <div class="right">
-
-      <svg class="svg-box" viewBox="0 0 600 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-        <!-- Shadow -->
-        <ellipse cx="300" cy="420" rx="170" ry="30" fill="#000" opacity="0.2"/>
-
-        <!-- Computer -->
-        <rect x="170" y="120" width="260" height="180" rx="18" fill="#1E293B"/>
-        <rect x="185" y="135" width="230" height="150" rx="12" fill="#0F172A"/>
-
-        <!-- Cute Face -->
-        <circle cx="255" cy="205" r="12" fill="#22C55E" class="blink"/>
-        <circle cx="345" cy="205" r="12" fill="#22C55E" class="blink"/>
-
-        <path d="M260 245 Q300 275 340 245" 
-              stroke="#22C55E" 
-              stroke-width="8" 
-              stroke-linecap="round"/>
-
-        <!-- Stand -->
-        <rect x="275" y="300" width="50" height="45" rx="8" fill="#334155"/>
-        <rect x="220" y="340" width="160" height="18" rx="9" fill="#475569"/>
-
-        <!-- Big Gear -->
-        <g class="gear-big">
-          <circle cx="130" cy="180" r="45" fill="#22C55E"/>
-          <circle cx="130" cy="180" r="18" fill="#0F172A"/>
-
-          <rect x="126" y="120" width="8" height="25" rx="4" fill="#22C55E"/>
-          <rect x="126" y="215" width="8" height="25" rx="4" fill="#22C55E"/>
-
-          <rect x="70" y="176" width="25" height="8" rx="4" fill="#22C55E"/>
-          <rect x="165" y="176" width="25" height="8" rx="4" fill="#22C55E"/>
-
-          <rect x="89" y="138" width="8" height="25" rx="4" transform="rotate(-45 89 138)" fill="#22C55E"/>
-          <rect x="163" y="212" width="8" height="25" rx="4" transform="rotate(-45 163 212)" fill="#22C55E"/>
-
-          <rect x="163" y="138" width="8" height="25" rx="4" transform="rotate(45 163 138)" fill="#22C55E"/>
-          <rect x="89" y="212" width="8" height="25" rx="4" transform="rotate(45 89 212)" fill="#22C55E"/>
-        </g>
-
-        <!-- Small Gear -->
-        <g class="gear-small">
-          <circle cx="460" cy="280" r="30" fill="#38BDF8"/>
-          <circle cx="460" cy="280" r="12" fill="#0F172A"/>
-
-          <rect x="456" y="235" width="8" height="18" rx="4" fill="#38BDF8"/>
-          <rect x="456" y="307" width="8" height="18" rx="4" fill="#38BDF8"/>
-
-          <rect x="415" y="276" width="18" height="8" rx="4" fill="#38BDF8"/>
-          <rect x="487" y="276" width="18" height="8" rx="4" fill="#38BDF8"/>
-        </g>
-
-        <!-- Floating Tools -->
-        <g>
-          <rect x="470" y="120" width="60" height="14" rx="7" fill="#FACC15"/>
-          <circle cx="530" cy="127" r="10" fill="#F59E0B"/>
-        </g>
-
-        <!-- Floating Dots -->
-        <circle cx="500" cy="180" r="6" fill="#22C55E">
-          <animate attributeName="cy" values="180;160;180" dur="2s" repeatCount="indefinite"/>
-        </circle>
-
-        <circle cx="520" cy="220" r="4" fill="#38BDF8">
-          <animate attributeName="cy" values="220;200;220" dur="3s" repeatCount="indefinite"/>
-        </circle>
 
       </svg>
-
     </div>
+    <h1 class="splash-title">SIBUK BOS</h1>
+    <h2 class="splash-subtitle">Sistem Pembukuan SPJ BOS</h2>
+    <div class="loading-dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+  </div>
+
+  <div id="install-prompt">
+    <div class="prompt-card">
+      <button class="prompt-close" onclick="tutupPrompt()">?</button>
+      <div class="prompt-header">
+        <div class="prompt-icon">
+          <svg style="width:24px;height:24px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        </div>
+        <div class="prompt-text">
+          <h4>Instal Aplikasi SIBUK BOS</h4>
+          <p>Tambahkan ke layar utama HP Anda agar terasa seperti aplikasi asli tanpa bar browser.</p>
+        </div>
+      </div>
+      
+      <div class="prompt-instruction" id="instruction-box">
+        <p>Menganalisa perangkat...</p>
+      </div>
+
+      <button id="btn-install-native" class="prompt-btn">Instal Sekarang</button>
+    </div>
+
+
+
+
 
   </div>
 
+  <iframe  id="gas-iframe"
+    src="https://script.google.com/macros/s/AKfycbyt9GV0NibuEnouhl4UE2z6daQUxGVrDMvSb25OY3lxiiFquMXtj2qj6PoWkNzH2hDi_A/exec" 
+    allow="fullscreen; clipboard-read; clipboard-write" 
+    title="SIBUK BOS 2.0 APPS"
+    onload="hilangkanSplash()">
+  </iframe>
+
+  <script>
+    // --- 1. LOGIKA SPLASH SCREEN ---
+    function hilangkanSplash() {
+      const splash = document.getElementById('splash-screen');
+      // Beri jeda ekstra sedikit agar transisi iframe lebih mulus
+      setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          cekDanTampilkanPrompt(); // Cek prompt install setelah splash hilang
+        }, 800);
+      }, 500);
+    }
+
+    // --- 2. LOGIKA INSTALL PROMPT (A2HS) ---
+    let deferredPrompt; // Menyimpan trigger install bawaan Android (jika ada)
+
+    // Menangkap trigger install native dari browser Android
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    function cekDanTampilkanPrompt() {
+      // 1. Cek apakah pengguna sudah pernah menutup prompt ini sebelumnya
+      if (localStorage.getItem('sibukbos_prompt_dismissed') === 'true') return;
+
+      // 2. Cek apakah aplikasi SEDANG dibuka dalam mode Standalone (Sudah diinstal)
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (isStandalone) return;
+
+      // 3. Deteksi OS Perangkat
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isAndroid = /Android/.test(navigator.userAgent);
+      
+      const instructionBox = document.getElementById('instruction-box');
+      const btnNative = document.getElementById('btn-install-native');
+      const promptUI = document.getElementById('install-prompt');
+
+      // Tampilkan hanya jika dibuka di HP
+      if (isIOS || isAndroid) {
+        if (isIOS) {
+          // Panduan khusus pengguna iPhone/iPad (Safari)
+          instructionBox.innerHTML = `
+            <svg style="width:24px;height:24px;color:#0ea5e9;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <p>Ketuk ikon <b>Share (Bagikan)</b> di bawah menu Safari, lalu geser dan pilih <b>"Tambahkan ke Layar Utama"</b>.</p>
+          `;
+          setTimeout(() => { promptUI.classList.add('show'); }, 2000);
+        } 
+        else if (isAndroid) {
+          if (deferredPrompt) {
+            // Jika Android mengizinkan instalasi satu-klik
+            instructionBox.style.display = 'none';
+            btnNative.style.display = 'block';
+            
+            btnNative.addEventListener('click', async () => {
+              promptUI.classList.remove('show');
+              deferredPrompt.prompt();
+              const { outcome } = await deferredPrompt.userChoice;
+              if (outcome === 'accepted') {
+                localStorage.setItem('sibukbos_prompt_dismissed', 'true');
+              }
+              deferredPrompt = null;
+            });
+            setTimeout(() => { promptUI.classList.add('show'); }, 2000);
+          } else {
+            // Panduan manual Android Chrome
+            instructionBox.innerHTML = `
+              <svg style="width:24px;height:24px;color:#64748B;flex-shrink:0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"/></svg>
+              <p>Ketuk ikon <b>Menu (Titik Tiga)</b> di pojok kanan atas browser, lalu pilih <b>"Tambahkan ke Layar Utama"</b>.</p>
+            `;
+            setTimeout(() => { promptUI.classList.add('show'); }, 2000);
+          }
+        }
+      }
+    }
+
+    function tutupPrompt() {
+      document.getElementById('install-prompt').classList.remove('show');
+      // Simpan di memori agar tidak mengganggu terus-menerus
+      localStorage.setItem('sibukbos_prompt_dismissed', 'true');
+    }
+  </script>
 </body>
-</html>
