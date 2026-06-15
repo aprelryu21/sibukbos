@@ -1,6 +1,11 @@
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="google-site-verification" content="OPWq6TRABR7Znic9lfHHwDMU-9KjPRrMWp9jEf2PZS8" />
   <title>SIBUK BOS 2.0 - Aplikasi Cetak Kuitansi & BKU Otomatis</title>
@@ -21,12 +26,40 @@
   
   <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23635BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>' type="image/svg+xml">
   <link rel="manifest" href="/manifest.json">
-    <script>
-      if ('serviceWorker' in navigator) {
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then(() => console.log('SIBUK BOS Service Worker Terdaftar!'));
-      }
-    </script>
+          .then(registration => {
+            console.log('SIBUK BOS Service Worker Terdaftar!');
+            
+            // Memaksa Service Worker untuk mengecek update di server setiap kali dibuka
+            registration.update();
+
+            // Jika ada versi baru yang terdeteksi, paksa reload halaman
+            registration.onupdatefound = () => {
+              const installingWorker = registration.installing;
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('Versi baru PWA ditemukan! Memuat ulang...');
+                  // Hapus cache bawaan browser untuk memastikan fresh load
+                  window.location.reload(true);
+                }
+              };
+            };
+          }).catch(err => console.log('SW Error:', err));
+      });
+
+      // Menangkap kontrol penuh saat Service Worker baru mengambil alih
+      let refreshing;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload(true);
+      });
+    }
+  </script>
 
   <style>
     /* Reset & Iframe Anti-Tenggelam */
@@ -99,12 +132,8 @@
     .prompt-btn {
       width: 100%; background: #635BFF; color: white; border: none; padding: 14px;
       border-radius: 14px; font-size: 14px; font-weight: 800; margin-top: 16px; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3); display: none; /* Hanya muncul jika Android mendeteksi prompt native */
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3); display: none;
     }
-
-
-
-
   </style>
 </head>
 <body>
@@ -117,15 +146,6 @@
     <div class="splash-logo">
       <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-
-
-
-
-
-
-
-
-
       </svg>
     </div>
     <h1 class="splash-title">SIBUK BOS</h1>
@@ -154,11 +174,6 @@
 
       <button id="btn-install-native" class="prompt-btn">Instal Sekarang</button>
     </div>
-
-
-
-
-
   </div>
 
   <iframe  id="gas-iframe"
@@ -172,34 +187,29 @@
     // --- 1. LOGIKA SPLASH SCREEN ---
     function hilangkanSplash() {
       const splash = document.getElementById('splash-screen');
-      // Beri jeda ekstra sedikit agar transisi iframe lebih mulus
       setTimeout(() => {
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.style.display = 'none';
-          cekDanTampilkanPrompt(); // Cek prompt install setelah splash hilang
+          cekDanTampilkanPrompt(); 
         }, 800);
       }, 500);
     }
 
     // --- 2. LOGIKA INSTALL PROMPT (A2HS) ---
-    let deferredPrompt; // Menyimpan trigger install bawaan Android (jika ada)
+    let deferredPrompt;
 
-    // Menangkap trigger install native dari browser Android
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
     });
 
     function cekDanTampilkanPrompt() {
-      // 1. Cek apakah pengguna sudah pernah menutup prompt ini sebelumnya
       if (localStorage.getItem('sibukbos_prompt_dismissed') === 'true') return;
 
-      // 2. Cek apakah aplikasi SEDANG dibuka dalam mode Standalone (Sudah diinstal)
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
       if (isStandalone) return;
 
-      // 3. Deteksi OS Perangkat
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       const isAndroid = /Android/.test(navigator.userAgent);
       
@@ -207,10 +217,8 @@
       const btnNative = document.getElementById('btn-install-native');
       const promptUI = document.getElementById('install-prompt');
 
-      // Tampilkan hanya jika dibuka di HP
       if (isIOS || isAndroid) {
         if (isIOS) {
-          // Panduan khusus pengguna iPhone/iPad (Safari)
           instructionBox.innerHTML = `
             <svg style="width:24px;height:24px;color:#0ea5e9;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             <p>Ketuk ikon <b>Share (Bagikan)</b> di bawah menu Safari, lalu geser dan pilih <b>"Tambahkan ke Layar Utama"</b>.</p>
@@ -219,7 +227,6 @@
         } 
         else if (isAndroid) {
           if (deferredPrompt) {
-            // Jika Android mengizinkan instalasi satu-klik
             instructionBox.style.display = 'none';
             btnNative.style.display = 'block';
             
@@ -234,7 +241,6 @@
             });
             setTimeout(() => { promptUI.classList.add('show'); }, 2000);
           } else {
-            // Panduan manual Android Chrome
             instructionBox.innerHTML = `
               <svg style="width:24px;height:24px;color:#64748B;flex-shrink:0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"/></svg>
               <p>Ketuk ikon <b>Menu (Titik Tiga)</b> di pojok kanan atas browser, lalu pilih <b>"Tambahkan ke Layar Utama"</b>.</p>
@@ -247,8 +253,8 @@
 
     function tutupPrompt() {
       document.getElementById('install-prompt').classList.remove('show');
-      // Simpan di memori agar tidak mengganggu terus-menerus
       localStorage.setItem('sibukbos_prompt_dismissed', 'true');
     }
   </script>
 </body>
+</html>
