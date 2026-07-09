@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="5;url=https://sites.google.com/view/sibukbosid/dashboard">
+    <title>Sedang Dialihkan - SIBUK BOS</title>
+    <style>
+        /* --- Gaya Dasar & Reset --- */
+        :root {
+            --primary-color: #6c5ce7; /* Warna ungu lucu */
+            --accent-color: #ff7675;  /* Warna pink kemerahan */
+            --text-color: #2d3436;
+            --bg-color: #f9f9f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden; /* Mencegah scroll saat animasi */
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* --- Kontainer Utama --- */
+        .container {
+            max-width: 600px;
+            z-index: 10;
+        }
+
+        /* --- Area Ilustrasi SVG --- */
+        .illustration-area {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+        }
+
+        /* --- Gaya & Animasi Hantu (SVG) --- */
+        .ghost {
+            width: 100%;
+            height: 100%;
+            fill: #fff;
+            stroke: var(--text-color);
+            stroke-width: 8px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            /* Animasi melayang jatuh bangun */
+            animation: floatGhost 4s ease-in-out infinite;
+            filter: drop-shadow(0 15px 10px rgba(0,0,0,0.1));
+        }
+
+        .ghost-eye {
+            fill: var(--text-color);
+            /* Animasi mata kedip-kedip */
+            animation: blinkEyes 3s infinite;
+            transform-origin: center;
+        }
+
+        .ghost-blush {
+            fill: #ffadd2;
+            opacity: 0.8;
+        }
+        
+        /* Bayangan di bawah hantu */
+        .shadow {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(1);
+            width: 150px;
+            height: 20px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            /* Animasi bayangan ikut mengecil/membesar */
+            animation: floatShadow 4s ease-in-out infinite;
+            filter: blur(2px);
+        }
+
+        /* --- Teks & Tombol --- */
+        .status-code {
+            font-size: 70px; /* Diperkecil sedikit agar teks muat */
+            font-weight: 900;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Bintang animasi di atas teks */
+        .status-code::after {
+            content: '✨'; /* Diubah dari tanda tanya menjadi bintang */
+            position: absolute;
+            top: -25px;
+            right: -40px;
+            font-size: 50px;
+            color: var(--accent-color);
+            transform: rotate(15deg);
+            animation: starWobble 2s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        p {
+            font-size: 16px;
+            color: #636e72;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .btn-redirect {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-redirect:hover {
+            background-color: #5b4bc4;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .btn-redirect:active {
+            transform: translateY(-1px);
+        }
+
+        /* --- Elemen Latar Belakang Acak --- */
+        .decor {
+            position: absolute;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            opacity: 0.05;
+            z-index: 1;
+            animation: decorFloat 10s infinite linear;
+        }
+
+        /* -----------------------------------------
+           --- DEFINISI ANIMASI (KEYFRAMES) ---
+           ----------------------------------------- */
+
+        @keyframes floatGhost {
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50%      { transform: translateY(-25px) rotate(2deg); }
+        }
+
+        @keyframes floatShadow {
+            0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 1; }
+            50%      { transform: translateX(-50%) scaleX(0.7); opacity: 0.5; }
+        }
+
+        @keyframes blinkEyes {
+            0%, 10%, 12%, 20%, 22%, 60%, 62%, 100% { transform: scaleY(1); }
+            11%, 21%, 61% { transform: scaleY(0.1); }
+            80% { transform: scaleY(1) translateX(2px); }
+            85% { transform: scaleY(1) translateX(-2px); }
+        }
+        
+        @keyframes starWobble {
+            0%, 100% { transform: rotate(15deg) scale(1); }
+            50%      { transform: rotate(25deg) scale(1.15); color: var(--primary-color); }
+        }
+
+        @keyframes decorFloat {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, 100px) rotate(360deg); }
+        }
+
+        /* --- Responsif Mobile --- */
+        @media (max-width: 480px) {
+            .status-code { font-size: 55px; }
+            .status-code::after { font-size: 35px; right: -25px; top: -15px; }
+            h1 { font-size: 22px; }
+            p { font-size: 14px; }
+            .illustration-area { width: 200px; height: 200px; }
+            .shadow { width: 100px; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="decor" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
+    <div class="decor" style="width: 50px; height: 50px; bottom: 15%; right: 15%; background-color: var(--accent-color); animation-duration: 15s;"></div>
+    <div class="decor" style="width: 80px; height: 80px; top: 60%; left: 80%; animation-duration: 12s; opacity: 0.03;"></div>
+
+    <div class="container">
+        
+        <div class="illustration-area">
+            <svg class="ghost" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 20 C60 20 30 50 30 90 L30 180 C30 200 45 210 60 200 C75 190 85 200 100 200 C115 200 125 190 140 200 C155 210 170 200 170 180 L170 90 C170 50 140 20 100 20 Z" />
+                
+                <ellipse class="ghost-eye" cx="75" cy="100" rx="10" ry="12" />
+                <ellipse class="ghost-eye" cx="125" cy="100" rx="10" ry="12" />
+                
+                <path fill="none" stroke="#2d3436" stroke-width="6" stroke-linecap="round" d="M90 135 Q100 150 110 135" />
+                
+                <circle class="ghost-blush" cx="55" cy="125" r="8" />
+                <circle class="ghost-blush" cx="145" cy="125" r="8" />
+                
+                <path fill="none" stroke="#2d3436" stroke-width="8" stroke-linecap="round" d="M30 130 C15 110 20 90 40 85" />
+                <path fill="none" stroke="#2d3436" stroke-width="8" stroke-linecap="round" d="M170 130 C185 150 190 170 180 180" />
+            </svg>
+            <div class="shadow"></div>
+        </div>
+
+        <div class="status-code">Dialihkan</div>
+        <h1>Bentar Ya, Pindah Rumah Dulu...</h1>
+        <p>Hantu kami lagi sibuk bantuin angkut-angkut data ke alamat baru SIBUK BOS. <br> Anda akan diarahkan otomatis dalam 5 detik.</p>
+        
+        <a href="https://sites.google.com/view/sibukbosid/dashboard" class="btn-redirect">Meluncur Sekarang 🚀</a>
+    </div>
+
+</body>
+</html>
