@@ -2,12 +2,12 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/pindah.html",
+      "destination": "/backup.html",
       "permanent": false
     },
     {
       "source": "/public/(.*)",
-      "destination": "/pindah.html",
+      "destination": "/backup.html",
       "permanent": false
     }
   ]
