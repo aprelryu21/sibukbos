@@ -2,99 +2,259 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pemberitahuan Penting - SIBUK BOS 2.0</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="google-site-verification" content="OPWq6TRABR7Znic9lfHHwDMU-9KjPRrMWp9jEf2PZS8" />
+  <title>SIBUK BOS - Aplikasi Cetak Kuitansi & BKU Otomatis</title>
+  <meta name="description" content="Aplikasi SIBUK BOS membantu Bendahara dan Operator Sekolah mengekstrak PDF BKU Arkas menjadi kuitansi SPJ otomatis secara massal. Cepat, akurat, dan gratis.">
+  <meta name="keywords" content="Aplikasi BOS, SPJ BOS, Arkas, Cetak Kuitansi Massal, BKU Arkas, Bendahara Sekolah, Ekstrak PDF BKU, Kurikulum Merdeka, Laporan Keuangan Sekolah">
+  <meta name="author" content="Tim Developer SIBUK BOS">
+  
+  <meta property="og:title" content="SIBUK BOS - Sistem Pembukuan Kuitansi BOSP">
+  <meta property="og:description" content="Tinggalkan Cara Ketik Manual dan Tumpukan Berkas yang Menggunung. Cukup Upload PDF BKU Dari Aplikasi ARKAS Anda, Biarkan Sistem AI Kami Yang Mengekstrak, Memproses, Menghitung Pajak, Hingga Mencetak Ratusan Kuitansi SPJ BOSP Dengan Rapi Beserta Lampiran Kuitansinya.">
+  <meta property="og:url" content="https://sibukbosid.web.app">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://i.ibb.co.com/hv3wsNY/SIBUK-BOS.webp"> 
+  <link rel="icon" href="https://i.ibb.co.com/hv3wsNY/SIBUK-BOS.webp" type="image/webp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SIBUK BOS">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F8FAFC">
+  
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="https://i.ibb.co.com/hv3wsNY/SIBUK-BOS.webp">
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('SIBUK BOS Service Worker Terdaftar!');
+            
+            // Memaksa Service Worker untuk mengecek update di server setiap kali dibuka
+            registration.update();
+
+            // Jika ada versi baru yang terdeteksi, paksa reload halaman
+            registration.onupdatefound = () => {
+              const installingWorker = registration.installing;
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('Versi baru PWA ditemukan! Memuat ulang...');
+                  // Hapus cache bawaan browser untuk memastikan fresh load
+                  window.location.reload(true);
+                }
+              };
+            };
+          }).catch(err => console.log('SW Error:', err));
+      });
+
+      // Menangkap kontrol penuh saat Service Worker baru mengambil alih
+      let refreshing;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload(true);
+      });
+    }
+  </script>
+
   <style>
-    /* Menggunakan Font Profesionalala Apple/Google */
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #F6F9FC; /* Warna Surface SIBUK BOS */
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      color: #0A2540; /* Warna Brand SIBUK BOS */
+    /* Reset & Iframe Anti-Tenggelam */
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100dvh; min-height: -webkit-fill-available;
+      overflow: hidden; background-color: #0A2540; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    /* ========================================= */
+    /* 1. SPLASH SCREEN (LAYAR PEMBUKA)          */
+    /* ========================================= */
+    #splash-screen {
+      position: fixed; inset: 0; z-index: 9999; background-color: #F8FAFC; /* Warna putih tulang */
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s;
+    }
+    .splash-logo {
+      width: 100px; height: 100px; 
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      animation: pulse-logo 2s infinite ease-in-out;
+    }
+    .splash-logo img { width: 100%; height: 100%; object-fit: contain; }
+    
+    .splash-title { color: #0F172A; font-size: 28px; font-weight: 900; letter-spacing: 1px; margin: 0 0 8px 0; }
+    .splash-subtitle { color: #64748B; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+    
+    .loading-dots { display: flex; gap: 6px; margin-top: 40px; }
+    .dot { width: 10px; height: 10px; background-color: #635BFF; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes pulse-logo {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 10px 15px rgba(99, 91, 255, 0.2)); }
+      50% { transform: scale(1.05); filter: drop-shadow(0 15px 25px rgba(99, 91, 255, 0.4)); }
+    }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
     }
 
-    .container {
-      background: white;
-      padding: 4rem 3rem;
-      border-radius: 2rem;
-      box-shadow: 0 25px 50px -12px rgba(10, 37, 64, 0.1);
-      text-align: center;
-      max-width: 500px;
-      width: 90%;
-      border: 1px solid rgba(10, 37, 64, 0.05);
+    /* ========================================= */
+    /* 2. INSTALL PROMPT (NOTIFIKASI PASANG)     */
+    /* ========================================= */
+    #install-prompt {
+      position: fixed; bottom: -150%; left: 0; width: 100%; z-index: 9998;
+      display: flex; justify-content: center; padding: 16px; box-sizing: border-box;
+      transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    /* Gaya Ilustrasi SVG */
-    .illustration {
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 3rem;
-      color: #635BFF; /* Warna Primary SIBUK BOS */
+    #install-prompt.show { bottom: 0; }
+    
+    .prompt-card {
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      width: 100%; max-width: 400px; padding: 20px; border-radius: 24px;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.5);
+      position: relative;
     }
-
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      letter-spacing: -0.5px;
+    .prompt-close {
+      position: absolute; top: 12px; right: 12px; width: 30px; height: 30px;
+      background: #F1F5F9; border: none; border-radius: 50%; color: #64748B;
+      font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
-
-    p {
-      color: #64748b;
-      line-height: 1.7;
-      font-size: 1rem;
-      margin-bottom: 3rem;
-    }
-
-    /* Tombol Utama Ala Aplikasi Premium */
-    .btn-pindah {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 1.2rem 2.5rem;
-      background-color: #635BFF; /* Warna Primary SIBUK BOS */
-      color: white;
-      text-decoration: none;
-      border-radius: 1rem;
-      font-weight: 700;
-      font-size: 1rem;
-      box-shadow: 0 10px 20px -5px rgba(99, 91, 255, 0.4);
-      transition: all 0.3s ease;
-    }
-
-    .btn-pindah:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 25px -5px rgba(99, 91, 255, 0.5);
-      background-color: #5249ea;
-    }
-
-    .btn-pindah:active {
-      transform: translateY(1px);
+    .prompt-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .prompt-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #635BFF, #3B82F6); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+    .prompt-text h4 { margin: 0 0 4px 0; color: #0F172A; font-size: 18px; font-weight: 800; }
+    .prompt-text p { margin: 0; color: #64748B; font-size: 12px; font-weight: 500; line-height: 1.4; }
+    
+    .prompt-instruction { background: #F8FAFC; padding: 12px; border-radius: 12px; border: 1px solid #E2E8F0; display: flex; align-items: center; gap: 12px; }
+    .prompt-instruction p { margin: 0; font-size: 12px; color: #334155; font-weight: 600; line-height: 1.5; }
+    .prompt-btn {
+      width: 100%; background: #635BFF; color: white; border: none; padding: 14px;
+      border-radius: 14px; font-size: 14px; font-weight: 800; margin-top: 16px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3); display: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <svg class="illustration" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
 
-    <h1>Yth. Bapak / Ibu Pengguna SIBUK BOS 2.0</h1>
-    <p>
-      Guna meningkatkan kualitas layanan dan kenyamanan akses aplikasi SIBUK BOS 2.0, kami sampaikan bahwa alamat akses SIBUKBOS telah resmi kami perbarui.<br><br>
-      Silakan klik tombol di bawah ini untuk menuju alamat yang baru. Jangan lupa menyimpan (bookmark) alamat baru tersebut untuk penggunaan di masa mendatang.
-    </p>
-
-    <a href="https://sibukbosid.web.app" class="btn-pindah">
-      Buka SIBUK BOS di Alamat Baru
-      <svg style="width:1.2rem;height:1.2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-    </a>
+  <div style="display: none;" aria-hidden="true">
+    <h1>SIBUK BOS - Sistem Pembukuan Kuitansi BOSP</h1>
+    <p>Aplikasi SIBUK BOS adalah solusi cerdas berbasis web untuk Bendahara Sekolah dan Operator Dana BOS. Fitur andalan kami meliputi: ekstraksi otomatis file PDF BKU Arkas menggunakan AI, pencetakan kuitansi massal anti-blokir, rekapitulasi data BKU, manajemen pajak (PPN, PPh), hingga dukungan fitur Tanda Tangan Digital Kepala Sekolah. Dirancang khusus untuk mempermudah pelaporan keuangan sekolah dalam kerangka Kurikulum Merdeka. Akses cepat, aman, dan tanpa biaya langganan.</p>
   </div>
+  <div id="splash-screen">
+    <div class="splash-logo">
+      <img src="https://i.ibb.co.com/hv3wsNY/SIBUK-BOS.webp" alt="Logo SIBUK BOS">
+    </div>
+    <h1 class="splash-title">SIBUK BOS</h1>
+    <h2 class="splash-subtitle">SISTEM PEMBUKUAN KUITANSI BOSP</h2>
+    <div class="loading-dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+  </div>
+
+  <div id="install-prompt">
+    <div class="prompt-card">
+      <button class="prompt-close" onclick="tutupPrompt()">?</button>
+      <div class="prompt-header">
+        <div class="prompt-icon">
+          <svg style="width:24px;height:24px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        </div>
+        <div class="prompt-text">
+          <h4>Instal Aplikasi SIBUK BOS</h4>
+          <p>Tambahkan ke layar utama HP Anda agar terasa seperti aplikasi asli tanpa bar browser.</p>
+        </div>
+      </div>
+      
+      <div class="prompt-instruction" id="instruction-box">
+        <p>Menganalisa perangkat...</p>
+      </div>
+
+      <button id="btn-install-native" class="prompt-btn">Instal Sekarang</button>
+    </div>
+  </div>
+
+  <iframe id="gas-iframe"
+    src="https://script.google.com/macros/s/AKfycbxBNV6gsyivvr8kdBmAOW1X4fSMRCq_u5AAgHyN49cBEabIn20-9QiFdl28qKa9uUxpXQ/exec" 
+    allow="fullscreen; clipboard-read; clipboard-write" 
+    title="SIBUK BOS"
+    onload="hilangkanSplash()">
+  </iframe>
+
+  <script>
+    // --- 1. LOGIKA SPLASH SCREEN ---
+    function hilangkanSplash() {
+      const splash = document.getElementById('splash-screen');
+      setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+          cekDanTampilkanPrompt(); 
+        }, 800);
+      }, 500);
+    }
+
+    // --- 2. LOGIKA INSTALL PROMPT (A2HS) ---
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    function cekDanTampilkanPrompt() {
+      if (localStorage.getItem('sibukbos_prompt_dismissed') === 'true') return;
+
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (isStandalone) return;
+
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isAndroid = /Android/.test(navigator.userAgent);
+      
+      const instructionBox = document.getElementById('instruction-box');
+      const btnNative = document.getElementById('btn-install-native');
+      const promptUI = document.getElementById('install-prompt');
+
+      if (isIOS || isAndroid) {
+        if (isIOS) {
+          instructionBox.innerHTML = `
+            <svg style="width:24px;height:24px;color:#0ea5e9;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <p>Ketuk ikon <b>Share (Bagikan)</b> di bawah menu Safari, lalu geser dan pilih <b>"Tambahkan ke Layar Utama"</b>.</p>
+          `;
+          setTimeout(() => { promptUI.classList.add('show'); }, 2000);
+        } 
+        else if (isAndroid) {
+          if (deferredPrompt) {
+            instructionBox.style.display = 'none';
+            btnNative.style.display = 'block';
+            
+            btnNative.addEventListener('click', async () => {
+              promptUI.classList.remove('show');
+              deferredPrompt.prompt();
+              const { outcome } = await deferredPrompt.userChoice;
+              if (outcome === 'accepted') {
+                localStorage.setItem('sibukbos_prompt_dismissed', 'true');
+              }
+              deferredPrompt = null;
+            });
+            setTimeout(() => { promptUI.classList.add('show'); }, 2000);
+          } else {
+            instructionBox.innerHTML = `
+              <svg style="width:24px;height:24px;color:#64748B;flex-shrink:0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"/></svg>
+              <p>Ketuk ikon <b>Menu (Titik Tiga)</b> di pojok kanan atas browser, lalu pilih <b>"Tambahkan ke Layar Utama"</b>.</p>
+            `;
+            setTimeout(() => { promptUI.classList.add('show'); }, 2000);
+          }
+        }
+      }
+    }
+
+    function tutupPrompt() {
+      document.getElementById('install-prompt').classList.remove('show');
+      localStorage.setItem('sibukbos_prompt_dismissed', 'true');
+    }
+  </script>
 </body>
 </html>
