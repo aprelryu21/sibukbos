@@ -157,7 +157,7 @@
 
   <div id="install-prompt">
     <div class="prompt-card">
-      <button class="prompt-close" onclick="tutupPrompt()">?</button>
+      <button class="prompt-close" onclick="tutupPrompt()">&times;</button>
       <div class="prompt-header">
         <div class="prompt-icon">
           <svg style="width:24px;height:24px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -178,12 +178,21 @@
 
   <iframe id="gas-iframe"
     src="https://script.google.com/macros/s/AKfycbx0hvqouTuGmad7NwxroXxeSx108DxC8YpwkcZgwnP0nT1hhdculanxtjk5i4ZpcSA1sA/exec" 
-    allow="fullscreen; clipboard-read; clipboard-write" 
+    allow="fullscreen; clipboard-read; clipboard-write; camera" 
     title="SIBUK BOS"
     onload="hilangkanSplash()">
   </iframe>
 
   <script>
+    // Meneruskan parameter URL induk ke dalam iframe Apps Script
+    (function() {
+      const iframeEl = document.getElementById('gas-iframe');
+      if (iframeEl && window.location.search) {
+        const urlPemisah = iframeEl.src.split('?')[0];
+        iframeEl.src = urlPemisah + window.location.search;
+      }
+    })();
+
     // --- 1. LOGIKA SPLASH SCREEN ---
     function hilangkanSplash() {
       const splash = document.getElementById('splash-screen');
